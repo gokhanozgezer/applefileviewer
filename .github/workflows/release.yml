@@ -1,0 +1,249 @@
+# Release pipeline — tag push (vX.Y.Z) → verify → build (Windows / macOS arm64 / macOS x64 / Linux)
+# → ONE GitHub release with all installers + updater metadata → published.
+#
+# Why this shape (see docs/RELEASING.md for the long version):
+#   * Race-free single release: `prepare` creates a DRAFT release for the tag up front.
+#     Every build job runs electron-builder with EP_DRAFT=true, so it finds that draft
+#     (matched by tag) and uploads into it instead of each job racing to create its own.
+#     `publish` flips the draft to a published "latest" release only after every job
+#     succeeded and all expected assets are present. Users/updaters never see a
+#     half-uploaded release.
+#   * macOS dual-arch: arm64 (macos-14) and x64 (macos-15-intel) are built NATIVELY in
+#     separate jobs, so every native/binary dependency (better-sqlite3, sharp's @img/*
+#     packages, ffmpeg-static's downloaded binary) matches the target CPU. Each job would
+#     otherwise upload its own latest-mac.yml and the second would overwrite the first,
+#     so the mac jobs build with `--publish never`, and `mac-merge` merges both
+#     latest-mac.yml files into one (files[] of both arches) and uploads dmg/zip/blockmap
+#     + the merged yml with `gh release upload`.
+#   * Unsigned on every platform: CSC_IDENTITY_AUTO_DISCOVERY=false.
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch: # run from the Actions tab with "Use workflow from: <tag>"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+env:
+  CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+  # Upload into the draft created by `prepare` (see header).
+  EP_DRAFT: 'true'
+  GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  GH_REPO: ${{ github.repository }}
+  TAG: ${{ github.ref_name }}
+
+jobs:
+  verify:
+    name: Verify (lint, typecheck, unit tests)
+    runs-on: windows-latest
+    outputs:
+      version: ${{ steps.ver.outputs.version }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Tag must match package.json version
+        id: ver
+        shell: bash
+        run: |
+          VERSION=$(node -p "require('./package.json').version")
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          if [ "$TAG" != "v$VERSION" ]; then
+            echo "::error::Ref '$TAG' does not match package.json version 'v$VERSION'. Tag with 'npm version <patch|minor|major>' and push the tag (or dispatch this workflow from that tag)."
+            exit 1
+          fi
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+      - run: npm run lint
+      - run: npm run typecheck
+      - run: npm test
+
+  prepare:
+    name: Create draft release
+    needs: verify
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Create (or reuse) the draft release for ${{ github.ref_name }}
+        shell: bash
+        run: |
+          state=$(gh release view "$TAG" --json isDraft --jq '.isDraft' 2>/dev/null || echo missing)
+          case "$state" in
+            missing)
+              gh release create "$TAG" --draft --verify-tag \
+                --title "AppleFileViewer ${{ needs.verify.outputs.version }}" --generate-notes ;;
+            true)
+              echo "Draft release $TAG already exists — re-using it (re-run)." ;;
+            *)
+              echo "::error::Release $TAG is already PUBLISHED. Bump the version and tag again instead of rebuilding a published release."
+              exit 1 ;;
+          esac
+
+  build-windows:
+    name: Windows x64 (NSIS + portable)
+    needs: [verify, prepare]
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      # postinstall (electron-builder install-app-deps) rebuilds better-sqlite3 for Electron.
+      - run: npm ci
+
+      # Smoke/e2e against the real Electron build on a synthetic backup (~1-2 min).
+      - run: npm run test:e2e
+      - name: Playwright trace
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace
+          path: test-results/
+          if-no-files-found: ignore
+
+      # npm run build = prebuild (ABI check + worker copy) → tsc -b → vite build → electron-builder <args>
+      - run: npm run build -- --win --publish always
+
+  build-linux:
+    name: Linux x64 (AppImage + deb)
+    needs: [verify, prepare]
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run build -- --linux --publish always
+
+  build-mac:
+    name: macOS ${{ matrix.arch }}
+    needs: [verify, prepare]
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - arch: arm64
+            runner: macos-14 # Apple Silicon
+          - arch: x64
+            runner: macos-15-intel # Intel (macos-13 images were retired in Dec 2025)
+    runs-on: ${{ matrix.runner }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+
+      - name: Resolve electron-builder output directory
+        id: out
+        shell: bash
+        run: |
+          dir=$(node -p "const p=require('./package.json');((p.build&&p.build.directories&&p.build.directories.output)||'dist').replace('\${version}',p.version)")
+          echo "dir=$dir" >> "$GITHUB_OUTPUT"
+
+      # Targets are given explicitly (`dmg zip`) so the CLI arch wins: package.json
+      # build.mac.target lists BOTH arches for local builds, and electron-builder ignores
+      # a bare `--arm64/--x64` when the config pins arches. Native runner = native binaries.
+      # --publish never: latest-mac.yml of the two arches must be merged first (mac-merge).
+      # Ad-hoc signing happens in the afterPack hook (scripts/mac-adhoc-sign.js).
+      - run: npm run build -- --mac dmg zip --${{ matrix.arch }} --publish never
+
+      - name: Stage mac artifacts
+        shell: bash
+        run: |
+          mkdir -p staged
+          ls -la "${{ steps.out.outputs.dir }}"
+          cp "${{ steps.out.outputs.dir }}"/*.dmg "${{ steps.out.outputs.dir }}"/*.zip staged/
+          cp "${{ steps.out.outputs.dir }}"/*.blockmap staged/ 2>/dev/null || true
+          cp "${{ steps.out.outputs.dir }}/latest-mac.yml" "staged/latest-mac-${{ matrix.arch }}.yml"
+          ls -la staged
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: mac-${{ matrix.arch }}
+          path: staged/
+          if-no-files-found: error
+          retention-days: 3
+
+  mac-merge:
+    name: macOS — merge latest-mac.yml + upload
+    needs: build-mac
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: mac-*
+          path: mac
+          merge-multiple: true
+
+      - name: Merge latest-mac.yml (arm64 + x64)
+        shell: bash
+        run: |
+          node - <<'EOF'
+          const fs = require('fs');
+          // electron-builder's latest-mac.yml layout:
+          //   version: X / files: (list of "- url/sha512/size" items) / path / sha512 / releaseDate
+          function split(file) {
+            const lines = fs.readFileSync(file, 'utf8').replace(/\r/g, '').split('\n');
+            const i = lines.findIndex((l) => l.startsWith('files:'));
+            if (i < 0) throw new Error(`${file}: no files: section`);
+            let j = i + 1;
+            while (j < lines.length && /^(\s+|-)/.test(lines[j])) j++;
+            return { head: lines.slice(0, i), files: lines.slice(i + 1, j), tail: lines.slice(j) };
+          }
+          const arm = split('mac/latest-mac-arm64.yml');
+          const x64 = split('mac/latest-mac-x64.yml');
+          const v = (s) => s.head.find((l) => l.startsWith('version:'));
+          if (v(arm) !== v(x64)) throw new Error(`version mismatch: ${v(arm)} vs ${v(x64)}`);
+          // MacUpdater picks the zip whose URL contains "arm64" on Apple Silicon and one
+          // WITHOUT "arm64" on Intel → both arches' entries go into one files[] list.
+          const merged = [...arm.head, 'files:', ...arm.files, ...x64.files, ...arm.tail].join('\n');
+          fs.writeFileSync('mac/latest-mac.yml', merged.endsWith('\n') ? merged : merged + '\n');
+          console.log(merged);
+          EOF
+          rm mac/latest-mac-arm64.yml mac/latest-mac-x64.yml
+          ls -la mac
+
+      - name: Upload to the draft release
+        shell: bash
+        run: gh release upload "$TAG" mac/* --clobber
+
+  publish:
+    name: Publish release
+    needs: [verify, build-windows, build-linux, mac-merge]
+    runs-on: ubuntu-22.04
+    steps:
+      - name: Check every expected asset is attached
+        shell: bash
+        run: |
+          assets=$(gh release view "$TAG" --json assets --jq '.assets[].name')
+          echo "$assets"
+          missing=0
+          for f in \
+            AppleFileViewer-Windows-Setup.exe \
+            AppleFileViewer-Windows-Portable.exe \
+            AppleFileViewer-macOS-arm64.dmg \
+            AppleFileViewer-macOS-x64.dmg \
+            AppleFileViewer-Linux-x86_64.AppImage \
+            AppleFileViewer-Linux-amd64.deb \
+            latest.yml latest-mac.yml latest-linux.yml; do
+            if ! grep -qx "$f" <<<"$assets"; then echo "::error::missing release asset: $f"; missing=1; fi
+          done
+          exit $missing
+
+      - name: Publish (draft → latest release)
+        shell: bash
+        run: gh release edit "$TAG" --draft=false --latest

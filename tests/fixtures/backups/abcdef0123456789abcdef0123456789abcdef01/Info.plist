@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Device Name</key><string>Test iPhone</string>
+  <key>Display Name</key><string>Test iPhone</string>
+  <key>Product Type</key><string>iPhone17,1</string>
+  <key>Product Version</key><string>18.2.1</string>
+  <key>Serial Number</key><string>F2LXR0XXXX</string>
+  <key>Build Version</key><string>22C161</string>
+  <key>Last Backup Date</key><date>2024-05-09T14:32:00Z</date>
+</dict>
+</plist>

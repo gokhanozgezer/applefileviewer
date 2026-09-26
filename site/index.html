@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en" data-theme="auto">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Self-contained: no CDNs, fonts, trackers. The only network call is the GitHub API (latest version). -->
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'none'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src https://api.github.com; base-uri 'none'; form-action 'none'"
+    />
+    <meta name="referrer" content="no-referrer" />
+    <title>AppleFileViewer — free iPhone backup viewer for Windows, macOS &amp; Linux</title>
+    <meta
+      name="description"
+      content="Free, open-source and fully offline viewer for iPhone backups: photos, messages, WhatsApp, calls, voicemail, notes, voice memos and contacts — including encrypted backups. Windows, macOS and Linux."
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f8fafc" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b1220" media="(prefers-color-scheme: dark)" />
+    <link rel="canonical" href="https://gokhanozgezer.github.io/applefileviewer/" />
+    <link
+      rel="alternate"
+      hreflang="en"
+      href="https://gokhanozgezer.github.io/applefileviewer/?lang=en"
+    />
+    <link
+      rel="alternate"
+      hreflang="tr"
+      href="https://gokhanozgezer.github.io/applefileviewer/?lang=tr"
+    />
+    <link
+      rel="alternate"
+      hreflang="de"
+      href="https://gokhanozgezer.github.io/applefileviewer/?lang=de"
+    />
+    <link
+      rel="alternate"
+      hreflang="es"
+      href="https://gokhanozgezer.github.io/applefileviewer/?lang=es"
+    />
+    <link
+      rel="alternate"
+      hreflang="fr"
+      href="https://gokhanozgezer.github.io/applefileviewer/?lang=fr"
+    />
+    <link
+      rel="alternate"
+      hreflang="x-default"
+      href="https://gokhanozgezer.github.io/applefileviewer/"
+    />
+    <link rel="icon" href="assets/icon.svg" type="image/svg+xml" />
+    <link rel="icon" href="assets/favicon-32.png" sizes="32x32" type="image/png" />
+    <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="AppleFileViewer" />
+    <meta property="og:title" content="AppleFileViewer — free iPhone backup viewer" />
+    <meta
+      property="og:description"
+      content="Browse photos, messages, WhatsApp, calls, notes and more from your iPhone backups — offline, open source, encrypted backups supported."
+    />
+    <meta property="og:url" content="https://gokhanozgezer.github.io/applefileviewer/" />
+    <meta
+      property="og:image"
+      content="https://gokhanozgezer.github.io/applefileviewer/assets/og-image.png"
+    />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:locale" content="en_US" />
+    <meta property="og:locale:alternate" content="tr_TR" />
+    <meta property="og:locale:alternate" content="de_DE" />
+    <meta property="og:locale:alternate" content="es_ES" />
+    <meta property="og:locale:alternate" content="fr_FR" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <link rel="stylesheet" href="styles.css" />
+    <script src="theme-init.js"></script>
+    <script src="i18n.js" defer></script>
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip" href="#main" data-i18n="a11y.skip">Skip to content</a>
+
+    <header class="site-header">
+      <div class="container header-inner">
+        <a class="brand" href="#top" aria-label="AppleFileViewer">
+          <img src="assets/icon.svg" alt="" width="32" height="32" />
+          <span>AppleFileViewer</span>
+        </a>
+        <nav class="main-nav" aria-label="Primary" data-i18n-aria="a11y.primaryNav">
+          <a href="#features" data-i18n="nav.features">Features</a>
+          <a href="#screenshots" data-i18n="nav.screenshots">Screenshots</a>
+          <a href="#privacy" data-i18n="nav.privacy">Privacy</a>
+          <a href="#first-launch" data-i18n="nav.install">Install</a>
+          <a href="#faq" data-i18n="nav.faq">FAQ</a>
+        </nav>
+        <div class="header-tools">
+          <label class="visually-hidden" for="lang-select" data-i18n="a11y.language"
+            >Language</label
+          >
+          <select id="lang-select" class="lang-select">
+            <option value="en">English</option>
+            <option value="tr">Türkçe</option>
+            <option value="de">Deutsch</option>
+            <option value="es">Español</option>
+            <option value="fr">Français</option>
+          </select>
+          <button
+            id="theme-toggle"
+            class="icon-btn"
+            type="button"
+            aria-label="Toggle dark mode"
+            data-i18n-aria="a11y.theme"
+          >
+            <svg class="i-sun" viewBox="0 0 24 24" aria-hidden="true">
+              <circle cx="12" cy="12" r="4" />
+              <path
+                d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"
+              />
+            </svg>
+            <svg class="i-moon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" />
+            </svg>
+          </button>
+          <a
+            class="icon-btn"
+            id="gh-link"
+            href="https://github.com/gokhanozgezer/applefileviewer"
+            aria-label="GitHub"
+            rel="noopener"
+          >
+            <svg viewBox="0 0 24 24" aria-hidden="true" class="fill">
+              <path
+                d="M12 .5a11.5 11.5 0 0 0-3.64 22.4c.58.1.79-.25.79-.56v-2c-3.2.7-3.88-1.37-3.88-1.37-.52-1.33-1.28-1.69-1.28-1.69-1.05-.72.08-.7.08-.7 1.16.08 1.77 1.19 1.77 1.19 1.03 1.77 2.7 1.26 3.36.96.1-.75.4-1.26.73-1.55-2.55-.29-5.24-1.28-5.24-5.68 0-1.26.45-2.28 1.19-3.09-.12-.29-.52-1.46.11-3.05 0 0 .97-.31 3.17 1.18a11 11 0 0 1 5.78 0c2.2-1.49 3.17-1.18 3.17-1.18.63 1.59.23 2.76.11 3.05.74.81 1.19 1.83 1.19 3.09 0 4.41-2.69 5.39-5.25 5.67.41.36.78 1.06.78 2.14v3.17c0 .31.21.67.8.56A11.5 11.5 0 0 0 12 .5z"
+              />
+            </svg>
+          </a>
+        </div>
+      </div>
+    </header>
+
+    <main id="main">
+      <!-- HERO -->
+      <section class="hero" id="top">
+        <div class="container hero-grid">
+          <div class="hero-copy">
+            <p class="eyebrow" data-i18n="hero.badge">
+              Free &amp; open source · Windows · macOS · Linux
+            </p>
+            <h1 data-i18n="hero.title">Your iPhone backups, finally readable.</h1>
+            <p class="lead" data-i18n="hero.subtitle">
+              AppleFileViewer opens the backups that iTunes, Finder or Apple Devices save on your
+              computer and shows your photos, messages, WhatsApp chats, calls, notes and more —
+              offline, read-only and free.
+            </p>
+            <div class="cta">
+              <a id="primary-download" class="btn btn-primary" href="#download">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3v12m0 0-5-5m5 5 5-5M4 19h16" />
+                </svg>
+                <span id="primary-label" data-i18n="hero.downloadGeneric">Download</span>
+              </a>
+              <a class="btn btn-ghost" href="#download" data-i18n="hero.otherPlatforms"
+                >Other platforms</a
+              >
+            </div>
+            <p class="meta">
+              <span id="primary-alt"></span>
+              <span id="release-info" data-i18n="release.unknown">Latest release on GitHub</span>
+            </p>
+          </div>
+          <figure class="hero-shot">
+            <img
+              class="shot-light"
+              src="assets/screenshots/photos-light.png"
+              width="1280"
+              height="800"
+              alt="AppleFileViewer showing a photo library with albums"
+              data-i18n-alt="shots.photos"
+            />
+            <img
+              class="shot-dark"
+              src="assets/screenshots/photos-dark.png"
+              width="1280"
+              height="800"
+              alt="AppleFileViewer showing a photo library with albums"
+              data-i18n-alt="shots.photos"
+            />
+          </figure>
+        </div>
+      </section>
+
+      <!-- FEATURES -->
+      <section class="section" id="features" aria-labelledby="features-title">
+        <div class="container">
+          <h2 id="features-title" data-i18n="features.title">
+            Everything in your backup, one click away
+          </h2>
+          <p class="section-lead" data-i18n="features.subtitle">
+            A native-feeling desktop app for the data iPhone keeps in its local backups.
+          </p>
+          <ul class="feature-grid" role="list">
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="3" y="3" width="18" height="18" rx="3" />
+                <circle cx="9" cy="9" r="2" />
+                <path d="m21 15-5-5L5 21" />
+              </svg>
+              <h3 data-i18n="f.photos.t">Photos &amp; videos</h3>
+              <p data-i18n="f.photos.d">
+                Camera roll with albums, favorites and smart albums. HEIC and videos play without
+                extra codecs.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M21 12a8 8 0 0 1-11.6 7.1L4 21l1.9-5.4A8 8 0 1 1 21 12z" />
+              </svg>
+              <h3 data-i18n="f.messages.t">Messages</h3>
+              <p data-i18n="f.messages.d">
+                iMessage and SMS conversations with attachments, in a familiar chat layout.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M3 21l1.7-4.9A8.5 8.5 0 1 1 8 19.6z" />
+                <path d="M9 10c.5 2 2.5 4 4.5 4.5l1.3-1.3 2 1-1 2c-3.5 0-8-4.5-8-8l2-1 1 2z" />
+              </svg>
+              <h3 data-i18n="f.whatsapp.t">WhatsApp</h3>
+              <p data-i18n="f.whatsapp.d">
+                Private and group chats with sender names, photos, videos and voice notes.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path
+                  d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z"
+                />
+              </svg>
+              <h3 data-i18n="f.calls.t">Calls &amp; voicemail</h3>
+              <p data-i18n="f.calls.d">
+                Full call history and voicemail recordings you can play and save.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z" />
+                <path d="M14 3v6h6M8 13h8M8 17h5" />
+              </svg>
+              <h3 data-i18n="f.notes.t">Notes</h3>
+              <p data-i18n="f.notes.d">
+                Apple Notes with folders and rich text formatting preserved.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="9" y="2" width="6" height="12" rx="3" />
+                <path d="M5 10a7 7 0 0 0 14 0M12 17v5" />
+              </svg>
+              <h3 data-i18n="f.memos.t">Voice Memos</h3>
+              <p data-i18n="f.memos.d">Listen to and export your recordings.</p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="9" cy="8" r="4" />
+                <path d="M2 21a7 7 0 0 1 14 0M17 11h5M19.5 8.5v5" />
+              </svg>
+              <h3 data-i18n="f.contacts.t">Contacts</h3>
+              <p data-i18n="f.contacts.d">
+                Your address book, used everywhere to show names instead of numbers.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="11" cy="11" r="7" />
+                <path d="m20 20-3.5-3.5" />
+              </svg>
+              <h3 data-i18n="f.search.t">Global search</h3>
+              <p data-i18n="f.search.d">
+                Press Ctrl/⌘ + K to search messages, chats, notes and contacts at once.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M12 3v12m0 0 4-4m-4 4-4-4" />
+                <path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2" />
+              </svg>
+              <h3 data-i18n="f.export.t">Export</h3>
+              <p data-i18n="f.export.d">
+                Save conversations and data as PDF, HTML, CSV, TXT, JSON or vCard; copy original
+                media files.
+              </p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="4" y="11" width="16" height="10" rx="2" />
+                <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+              </svg>
+              <h3 data-i18n="f.encrypted.t">Encrypted backups</h3>
+              <p data-i18n="f.encrypted.d">Unlock password-protected backups right in the app.</p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <circle cx="12" cy="12" r="9" />
+                <path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18" />
+              </svg>
+              <h3 data-i18n="f.ui.t">Light, dark, EN/TR</h3>
+              <p data-i18n="f.ui.d">Follows your system theme; English and Turkish interface.</p>
+            </li>
+            <li class="feature">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <rect x="2" y="4" width="20" height="14" rx="2" />
+                <path d="M8 22h8M12 18v4" />
+              </svg>
+              <h3 data-i18n="f.platforms.t">Windows, macOS, Linux</h3>
+              <p data-i18n="f.platforms.d">One app, the same features on every desktop platform.</p>
+            </li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- SCREENSHOTS -->
+      <section class="section alt" id="screenshots" aria-labelledby="shots-title">
+        <div class="container">
+          <h2 id="shots-title" data-i18n="shots.title">Screenshots</h2>
+          <p class="section-lead" data-i18n="shots.subtitle">
+            Captured from the real app using a synthetic demo backup.
+          </p>
+          <div class="shot-grid">
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/backups-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/backups-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.backups">
+                Backups found automatically — encrypted ones are marked
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/overview-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/overview-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.overview">Device and backup overview</figcaption>
+            </figure>
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/messages-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/messages-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.messages">Message threads with attachments</figcaption>
+            </figure>
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/notes-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/notes-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.notes">Notes with folders</figcaption>
+            </figure>
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/search-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/search-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.search">
+                Global search across the whole backup
+              </figcaption>
+            </figure>
+            <figure>
+              <img
+                class="shot-light"
+                loading="lazy"
+                src="assets/screenshots/unlock-light.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <img
+                class="shot-dark"
+                loading="lazy"
+                src="assets/screenshots/unlock-dark.png"
+                width="1280"
+                height="800"
+                alt=""
+              />
+              <figcaption data-i18n="shots.unlock">Unlocking an encrypted backup</figcaption>
+            </figure>
+          </div>
+        </div>
+      </section>
+
+      <!-- PRIVACY + ENCRYPTION -->
+      <section class="section" id="privacy" aria-labelledby="privacy-title">
+        <div class="container two-col">
+          <div>
+            <h2 id="privacy-title" data-i18n="privacy.title">Private by design</h2>
+            <p class="section-lead" data-i18n="privacy.lead">
+              Your backup contains your whole life. It never leaves your computer.
+            </p>
+            <ul class="checklist" role="list">
+              <li data-i18n="privacy.p1">
+                Works fully offline — no account, no cloud, no uploads.
+              </li>
+              <li data-i18n="privacy.p2">No telemetry, analytics or tracking of any kind.</li>
+              <li data-i18n="privacy.p3">Read-only: your backup files are never modified.</li>
+              <li data-i18n="privacy.p4">
+                Decrypted data lives in a temporary folder and is wiped when you lock the backup or
+                quit.
+              </li>
+              <li data-i18n="privacy.p5">
+                Open source under the MIT license — anyone can audit the code.
+              </li>
+            </ul>
+          </div>
+          <div class="card" id="encrypted" aria-labelledby="enc-title">
+            <svg class="card-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <rect x="4" y="11" width="16" height="10" rx="2" />
+              <path d="M8 11V7a4 4 0 0 1 8 0v4" />
+            </svg>
+            <h2 id="enc-title" data-i18n="enc.title">Encrypted backups supported</h2>
+            <p data-i18n="enc.body">
+              If “Encrypt local backup” is on for your iPhone, the backup is protected with a
+              password. AppleFileViewer can unlock it:
+            </p>
+            <ol class="steps">
+              <li data-i18n="enc.s1">Select the backup marked LOCKED.</li>
+              <li data-i18n="enc.s2">
+                Enter the backup password you chose in iTunes, Finder or Apple Devices.
+              </li>
+              <li data-i18n="enc.s3">
+                Browse as usual. Lock it again (or quit) and the decrypted copy is deleted.
+              </li>
+            </ol>
+            <p class="muted" data-i18n="enc.note">
+              The password is never stored. If you forgot it, nobody — including this app — can
+              recover the backup.
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- DOWNLOAD -->
+      <section class="section alt" id="download" aria-labelledby="download-title">
+        <div class="container">
+          <h2 id="download-title" data-i18n="dl.title">Download</h2>
+          <p class="section-lead" data-i18n="dl.subtitle">
+            Free for everyone. Pick the file for your computer.
+          </p>
+          <ul class="dl-grid" role="list">
+            <li>
+              <a
+                class="dl"
+                data-asset="AppleFileViewer-Windows-Setup.exe"
+                data-os="windows"
+                href="#"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="fill">
+                  <path
+                    d="M3 5.5 10.5 4.5v7H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"
+                  />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.winSetup">Windows installer</strong
+                  ><small>Windows 10/11 · x64 · .exe</small></span
+                ></a
+              >
+            </li>
+            <li>
+              <a
+                class="dl"
+                data-asset="AppleFileViewer-Windows-Portable.exe"
+                data-os="windows"
+                href="#"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="fill">
+                  <path
+                    d="M3 5.5 10.5 4.5v7H3zM11.5 4.3 21 3v8.5h-9.5zM3 12.5h7.5v7L3 18.5zM11.5 12.5H21V21l-9.5-1.3z"
+                  />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.winPortable">Windows portable</strong
+                  ><small data-i18n="dl.winPortableSub">No installation · x64 · .exe</small></span
+                ></a
+              >
+            </li>
+            <li>
+              <a class="dl" data-asset="AppleFileViewer-macOS-arm64.dmg" data-os="mac" href="#">
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="fill">
+                  <path
+                    d="M16.4 12.6c0-2.4 2-3.6 2.1-3.6a4.5 4.5 0 0 0-3.5-1.9c-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8a4.7 4.7 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4a10.5 10.5 0 0 0 1.4-2.8 4.3 4.3 0 0 1-2.6-4zM14 5.4A4.3 4.3 0 0 0 15 2.3a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3 3.7 3.7 0 0 0 2.9-1.4z"
+                  />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.macArm">macOS — Apple Silicon</strong
+                  ><small>M1 / M2 / M3 / M4 · .dmg</small></span
+                ></a
+              >
+            </li>
+            <li>
+              <a class="dl" data-asset="AppleFileViewer-macOS-x64.dmg" data-os="mac" href="#">
+                <svg viewBox="0 0 24 24" aria-hidden="true" class="fill">
+                  <path
+                    d="M16.4 12.6c0-2.4 2-3.6 2.1-3.6a4.5 4.5 0 0 0-3.5-1.9c-1.5-.2-2.9.9-3.7.9-.8 0-1.9-.9-3.2-.8a4.7 4.7 0 0 0-4 2.4c-1.7 3-.4 7.4 1.2 9.8.8 1.2 1.8 2.5 3 2.4 1.2 0 1.7-.8 3.1-.8 1.5 0 1.9.8 3.2.8 1.3 0 2.2-1.2 3-2.4a10.5 10.5 0 0 0 1.4-2.8 4.3 4.3 0 0 1-2.6-4zM14 5.4A4.3 4.3 0 0 0 15 2.3a4.4 4.4 0 0 0-2.9 1.5 4.1 4.1 0 0 0-1 3 3.7 3.7 0 0 0 2.9-1.4z"
+                  />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.macIntel">macOS — Intel</strong
+                  ><small>x64 · .dmg</small></span
+                ></a
+              >
+            </li>
+            <li>
+              <a
+                class="dl"
+                data-asset="AppleFileViewer-Linux-x86_64.AppImage"
+                data-os="linux"
+                href="#"
+              >
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2c-2.5 0-3.5 2-3.5 4.5 0 1.5.4 2.5-.6 4S5 14 5 16.5c0 1 .5 1.5 1 2l-1.5 2h15l-1.5-2c.5-.5 1-1 1-2 0-2.5-1.9-4.5-2.9-6s-.6-2.5-.6-4C15.5 4 14.5 2 12 2z"
+                  />
+                  <circle cx="10.5" cy="7" r=".6" />
+                  <circle cx="13.5" cy="7" r=".6" />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.appimage">Linux AppImage</strong
+                  ><small data-i18n="dl.appimageSub">Most distributions · x86_64</small></span
+                ></a
+              >
+            </li>
+            <li>
+              <a class="dl" data-asset="AppleFileViewer-Linux-amd64.deb" data-os="linux" href="#">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                  <path
+                    d="M12 2c-2.5 0-3.5 2-3.5 4.5 0 1.5.4 2.5-.6 4S5 14 5 16.5c0 1 .5 1.5 1 2l-1.5 2h15l-1.5-2c.5-.5 1-1 1-2 0-2.5-1.9-4.5-2.9-6s-.6-2.5-.6-4C15.5 4 14.5 2 12 2z"
+                  />
+                  <circle cx="10.5" cy="7" r=".6" />
+                  <circle cx="13.5" cy="7" r=".6" />
+                </svg>
+                <span
+                  ><strong data-i18n="dl.deb">Linux .deb</strong
+                  ><small>Debian / Ubuntu · amd64</small></span
+                ></a
+              >
+            </li>
+          </ul>
+          <p class="note">
+            <span data-i18n="dl.unsigned"
+              >The app is not code-signed, so your system shows a warning the first time. See “First
+              launch” below — it takes a few seconds.</span
+            >
+            <a
+              id="all-releases"
+              href="https://github.com/gokhanozgezer/applefileviewer/releases"
+              data-i18n="dl.allReleases"
+              >All releases &amp; release notes</a
+            >
+          </p>
+        </div>
+      </section>
+
+      <!-- FIRST LAUNCH -->
+      <section class="section" id="first-launch" aria-labelledby="first-title">
+        <div class="container narrow">
+          <h2 id="first-title" data-i18n="first.title">First launch of an unsigned app</h2>
+          <p class="section-lead" data-i18n="first.subtitle">
+            Code-signing certificates cost money every year; this free app skips them. Here is how
+            to open it safely.
+          </p>
+          <div class="tabs" data-tabs>
+            <div role="tablist" aria-labelledby="first-title">
+              <button
+                role="tab"
+                id="tab-win"
+                aria-controls="panel-win"
+                aria-selected="true"
+                data-os="windows"
+              >
+                Windows
+              </button>
+              <button
+                role="tab"
+                id="tab-mac"
+                aria-controls="panel-mac"
+                aria-selected="false"
+                tabindex="-1"
+                data-os="mac"
+              >
+                macOS
+              </button>
+              <button
+                role="tab"
+                id="tab-linux"
+                aria-controls="panel-linux"
+                aria-selected="false"
+                tabindex="-1"
+                data-os="linux"
+              >
+                Linux
+              </button>
+            </div>
+            <div role="tabpanel" id="panel-win" aria-labelledby="tab-win" tabindex="0">
+              <ol class="steps">
+                <li data-i18n-html="first.win1">
+                  Run <code>AppleFileViewer-Windows-Setup.exe</code> (or the portable
+                  <code>.exe</code>).
+                </li>
+                <li data-i18n-html="first.win2">
+                  If <em>“Windows protected your PC”</em> (SmartScreen) appears, click
+                  <strong>More info</strong> → <strong>Run anyway</strong>.
+                </li>
+                <li data-i18n-html="first.win3">
+                  Backups are found automatically in
+                  <code>%APPDATA%\Apple Computer\MobileSync\Backup</code> (iTunes) and
+                  <code>%USERPROFILE%\Apple\MobileSync\Backup</code> (Apple Devices / Microsoft
+                  Store iTunes).
+                </li>
+              </ol>
+            </div>
+            <div role="tabpanel" id="panel-mac" aria-labelledby="tab-mac" tabindex="0" hidden>
+              <ol class="steps">
+                <li data-i18n-html="first.mac1">
+                  Open the <code>.dmg</code> and drag <strong>AppleFileViewer</strong> to
+                  <strong>Applications</strong>.
+                </li>
+                <li data-i18n-html="first.mac2">
+                  Open the app once. When macOS says it cannot verify the developer, go to
+                  <strong>System Settings → Privacy &amp; Security</strong>, scroll down and click
+                  <strong>Open Anyway</strong>.
+                </li>
+                <li data-i18n-html="first.mac3">
+                  Alternative (Terminal):
+                  <code>xattr -dr com.apple.quarantine /Applications/AppleFileViewer.app</code>
+                </li>
+                <li data-i18n-html="first.mac4">
+                  Give it <strong>Full Disk Access</strong> (System Settings → Privacy &amp;
+                  Security → Full Disk Access → add AppleFileViewer), otherwise macOS hides
+                  <code>~/Library/Application Support/MobileSync/Backup</code>.
+                </li>
+              </ol>
+            </div>
+            <div role="tabpanel" id="panel-linux" aria-labelledby="tab-linux" tabindex="0" hidden>
+              <ol class="steps">
+                <li data-i18n-html="first.linux1">
+                  AppImage: <code>chmod +x AppleFileViewer-Linux-x86_64.AppImage</code> and run it.
+                  On Ubuntu 22.04+ you may need <code>sudo apt install libfuse2</code>.
+                </li>
+                <li data-i18n-html="first.linux2">
+                  Debian/Ubuntu: <code>sudo apt install ./AppleFileViewer-Linux-amd64.deb</code>
+                </li>
+                <li data-i18n-html="first.linux3">
+                  Linux has no iTunes: copy a backup folder from a Windows PC or Mac, or create one
+                  with libimobiledevice (<code>idevicebackup2 backup --full ~/iPhoneBackup</code>),
+                  then choose the folder in the app.
+                </li>
+              </ol>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- FAQ -->
+      <section class="section alt" id="faq" aria-labelledby="faq-title">
+        <div class="container narrow">
+          <h2 id="faq-title" data-i18n="faq.title">Frequently asked questions</h2>
+          <details>
+            <summary data-i18n="faq.q1">Is it really free?</summary>
+            <p data-i18n="faq.a1">
+              Yes. It is open source under the MIT license: free to use, share and modify.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q2">Does it need my iPhone connected?</summary>
+            <p data-i18n="faq.a2">
+              No. It reads the backup that is already on your computer. Make a fresh backup with
+              iTunes, Finder or Apple Devices first if you want the latest data.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q3">Can it change or damage my backup?</summary>
+            <p data-i18n="faq.a3">
+              No. Everything is opened read-only; the app works on temporary copies.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q4">Where are my backups stored?</summary>
+            <p data-i18n-html="faq.a4">
+              Windows: <code>%APPDATA%\Apple Computer\MobileSync\Backup</code> or
+              <code>%USERPROFILE%\Apple\MobileSync\Backup</code>. macOS:
+              <code>~/Library/Application Support/MobileSync/Backup</code>. You can also pick any
+              folder, e.g. on an external drive.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q5">Why does my system warn me about the app?</summary>
+            <p data-i18n="faq.a5">
+              The app is not signed with a paid certificate. The source code and build pipeline are
+              public on GitHub; see “First launch” for how to open it.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q6">Does it send any data anywhere?</summary>
+            <p data-i18n="faq.a6">
+              No. There is no telemetry. The only optional network access is checking GitHub for a
+              newer version.
+            </p>
+          </details>
+          <details>
+            <summary data-i18n="faq.q7">Is this an Apple product?</summary>
+            <p data-i18n="faq.a7">
+              No. It is an independent project, not affiliated with or endorsed by Apple Inc.
+            </p>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="container footer-inner">
+        <p>
+          © <span id="year">2026</span>
+          <a href="https://github.com/gokhanozgezer" rel="noopener author">Gokhan OZGEZER</a> ·
+          <a
+            id="license-link"
+            href="https://github.com/gokhanozgezer/applefileviewer/blob/main/LICENSE"
+            data-i18n="footer.license"
+            >MIT License</a
+          >
+          ·
+          <a
+            id="repo-link"
+            href="https://github.com/gokhanozgezer/applefileviewer"
+            data-i18n="footer.source"
+            >Source code on GitHub</a
+          >
+        </p>
+        <p class="muted" data-i18n="footer.trademark">
+          iPhone, iTunes and Finder are trademarks of Apple Inc. This project is not affiliated with
+          Apple.
+        </p>
+      </div>
+    </footer>
+    <!-- Screenshot lightbox (app.js setupLightbox). Native <dialog>: focus trap + Esc for free. -->
+    <dialog id="lightbox" class="lightbox" data-i18n-aria="lb.label" aria-label="Screenshot viewer">
+      <figure class="lb-figure">
+        <img id="lb-img" alt="" />
+        <figcaption>
+          <span id="lb-caption"></span>
+          <span id="lb-counter" class="lb-counter"></span>
+        </figcaption>
+      </figure>
+      <button type="button" class="lb-btn lb-close" data-i18n-aria="lb.close" aria-label="Close">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+      </button>
+      <button
+        type="button"
+        class="lb-btn lb-prev"
+        data-i18n-aria="lb.prev"
+        aria-label="Previous screenshot"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5l-7 7 7 7" /></svg>
+      </button>
+      <button
+        type="button"
+        class="lb-btn lb-next"
+        data-i18n-aria="lb.next"
+        aria-label="Next screenshot"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 5l7 7-7 7" /></svg>
+      </button>
+    </dialog>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+# Tüm text dosyaları LF ile normalize edilir (Windows CRLF / prettier endOfLine:lf çatışması önlenir).
+# git autocrlf'e güvenmek yerine repo-level kural — fresh-clone/CI'da tutarlı.
+* text=auto eol=lf
+
+# Binary dosyalar (git autodetect'e bırakma, açıkça işaretle)
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.heic binary
+*.ico binary
+*.db binary
+*.sqlite binary
+*.sqlitedb binary
+*.node binary
+*.asar binary

@@ -1,0 +1,249 @@
+{
+  "name": "applefileviewer",
+  "version": "1.0.0",
+  "description": "Cross-platform desktop viewer for iPhone backups — photos, messages, WhatsApp, calls, notes and more, including encrypted backups.",
+  "author": "Gokhan OZGEZER <gokhanozgezer@gmail.com>",
+  "license": "MIT",
+  "homepage": "https://gokhanozgezer.github.io/applefileviewer/",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gokhanozgezer/applefileviewer.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gokhanozgezer/applefileviewer/issues"
+  },
+  "keywords": [
+    "iphone",
+    "ios",
+    "backup",
+    "itunes-backup",
+    "backup-viewer",
+    "encrypted-backup",
+    "imessage",
+    "sms",
+    "whatsapp",
+    "photos",
+    "notes",
+    "electron",
+    "offline",
+    "privacy"
+  ],
+  "private": true,
+  "type": "module",
+  "main": "dist-electron/main/index.js",
+  "scripts": {
+    "predev": "node scripts/ensure-electron-abi.js && node scripts/copy-worker.js",
+    "dev": "vite",
+    "prebuild": "node scripts/ensure-electron-abi.js && node scripts/copy-worker.js",
+    "build": "tsc -b && vite build && electron-builder",
+    "test": "node scripts/run-vitest.js run",
+    "test:watch": "node scripts/run-vitest.js watch",
+    "test:e2e": "node scripts/ensure-electron-abi.js && node scripts/copy-worker.js && vite build && playwright test",
+    "screenshots": "node scripts/ensure-electron-abi.js && node scripts/copy-worker.js && vite build && playwright test --config tests/e2e-support/screenshots.config.ts",
+    "lint": "eslint .",
+    "typecheck": "tsc -b",
+    "format": "prettier --write .",
+    "rebuild": "electron-builder install-app-deps",
+    "postinstall": "electron-builder install-app-deps",
+    "prepare": "husky",
+    "test:coverage": "node scripts/run-vitest.js run --coverage"
+  },
+  "lint-staged": {
+    "*.{ts,tsx}": [
+      "eslint --fix",
+      "prettier --write"
+    ],
+    "*.{json,md,css}": [
+      "prettier --write"
+    ]
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@fontsource-variable/jetbrains-mono": "^5.3.0",
+    "@radix-ui/react-dialog": "^1.1.17",
+    "@radix-ui/react-slot": "^1.3.0",
+    "@tanstack/react-query": "^5.59.0",
+    "better-sqlite3": "^11.3.0",
+    "bplist-parser": "^0.3.2",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "date-fns": "^4.1.0",
+    "electron-log": "^5.2.0",
+    "electron-store": "^10.0.0",
+    "electron-updater": "^6.8.9",
+    "ffmpeg-static": "^5.2.0",
+    "fluent-ffmpeg": "^2.1.3",
+    "heic-convert": "^2.1.0",
+    "lucide-react": "^0.460.0",
+    "plist": "^3.1.0",
+    "protobufjs": "^7.4.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-resizable-panels": "^2.1.7",
+    "react-router-dom": "^6.28.0",
+    "react-window": "^1.8.10",
+    "sharp": "^0.33.5",
+    "sonner": "^1.7.0",
+    "tailwind-merge": "^2.3.0",
+    "zustand": "^5.0.1"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.4",
+    "@playwright/test": "^1.49.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@testing-library/user-event": "^14.6.1",
+    "@types/better-sqlite3": "^7.6.11",
+    "@types/fluent-ffmpeg": "^2.1.27",
+    "@types/node": "^22.9.0",
+    "@types/plist": "^3.0.5",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/react-window": "^1.8.8",
+    "@typescript-eslint/eslint-plugin": "^8.13.0",
+    "@typescript-eslint/parser": "^8.13.0",
+    "@vitejs/plugin-react": "^4.3.3",
+    "@vitest/coverage-v8": "^2.1.9",
+    "autoprefixer": "^10.4.20",
+    "electron": "^33.0.2",
+    "electron-builder": "^25.1.8",
+    "eslint": "^9.14.0",
+    "eslint-plugin-no-restricted-imports": "^0.0.0",
+    "eslint-plugin-react": "^7.37.2",
+    "eslint-plugin-react-hooks": "^5.0.0",
+    "husky": "^9.1.6",
+    "jsdom": "^25.0.1",
+    "lint-staged": "^15.2.10",
+    "postcss": "^8.4.49",
+    "prettier": "^3.3.3",
+    "tailwindcss": "^3.4.14",
+    "typescript": "^5.6.3",
+    "typescript-eslint": "^8.59.2",
+    "vite": "^5.4.10",
+    "vite-plugin-electron": "^0.28.8",
+    "vite-plugin-electron-renderer": "^0.14.6",
+    "vitest": "^2.1.4"
+  },
+  "build": {
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "gokhanozgezer",
+        "repo": "applefileviewer",
+        "releaseType": "release"
+      }
+    ],
+    "appId": "com.applefileviewer.app",
+    "productName": "AppleFileViewer",
+    "directories": {
+      "output": "release/${version}"
+    },
+    "files": [
+      "dist",
+      "dist-electron"
+    ],
+    "asar": true,
+    "asarUnpack": [
+      "node_modules/ffmpeg-static/ffmpeg*",
+      "node_modules/sharp/**/*",
+      "node_modules/@img/**/*",
+      "node_modules/better-sqlite3/build/Release/*.node",
+      "**/*.node"
+    ],
+    "compression": "maximum",
+    "afterPack": "./scripts/mac-adhoc-sign.js",
+    "artifactName": "${productName}-${os}-${arch}.${ext}",
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "portable",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.ico"
+    },
+    "portable": {
+      "artifactName": "${productName}-Windows-Portable.${ext}"
+    },
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        },
+        {
+          "target": "zip",
+          "arch": [
+            "arm64",
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "category": "public.app-category.utilities",
+      "artifactName": "${productName}-macOS-${arch}.${ext}",
+      "hardenedRuntime": false,
+      "gatekeeperAssess": false,
+      "identity": null,
+      "darkModeSupport": true,
+      "extendInfo": {
+        "NSDesktopFolderUsageDescription": "AppleFileViewer exports photos, messages and notes to folders you choose, such as the Desktop.",
+        "NSDocumentsFolderUsageDescription": "AppleFileViewer exports photos, messages and notes to folders you choose, such as Documents.",
+        "NSDownloadsFolderUsageDescription": "AppleFileViewer exports photos, messages and notes to folders you choose, such as Downloads.",
+        "NSRemovableVolumesUsageDescription": "AppleFileViewer reads iPhone/iPad backups stored on external drives.",
+        "NSNetworkVolumesUsageDescription": "AppleFileViewer reads iPhone/iPad backups stored on network drives."
+      }
+    },
+    "dmg": {
+      "artifactName": "${productName}-macOS-${arch}.${ext}"
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "AppImage",
+          "arch": [
+            "x64"
+          ]
+        },
+        {
+          "target": "deb",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "icon": "build/icons",
+      "category": "Utility",
+      "executableName": "applefileviewer",
+      "maintainer": "Gokhan OZGEZER <gokhanozgezer@gmail.com>",
+      "synopsis": "Viewer for iPhone/iPad backups (photos, messages, WhatsApp, notes)"
+    },
+    "appImage": {
+      "artifactName": "${productName}-Linux-x86_64.${ext}"
+    },
+    "deb": {
+      "artifactName": "${productName}-Linux-amd64.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "AppleFileViewer",
+      "uninstallDisplayName": "AppleFileViewer ${version}",
+      "artifactName": "${productName}-Windows-Setup.${ext}"
+    }
+  }
+}

@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      # postinstall electron-builder install-app-deps → better-sqlite3 Electron ABI.
+      # Testler de Electron'un Node'unda koşar (scripts/run-vitest.js) — ABI değişmez.
+      - run: npm ci
+
+      - run: npm run lint
+
+      - run: npm run typecheck
+
+      - run: npm run test:coverage
+
+      - name: Coverage raporu
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: coverage/
+          if-no-files-found: ignore
+
+  e2e:
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm run test:e2e
+
+      - name: Playwright trace
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-trace
+          path: test-results/
+          if-no-files-found: ignore
+
+  package:
+    # Installer yalnızca main'e push'ta üretilir (PR'larda gereksiz süre).
+    if: github.event_name == 'push'
+    runs-on: windows-latest
+    needs: [test, e2e]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - run: npm ci
+
+      # --publish never: build.publish (GitHub) yalnızca release.yml tag akışında kullanılır.
+      - run: npm run build -- --publish never
+        env:
+          # İmzasız build — sertifika yok; electron-builder'ın otomatik keşfini kapat.
+          CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: installer
+          path: release/**/*.exe
+          if-no-files-found: error

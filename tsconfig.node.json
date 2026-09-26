@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "composite": true,
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "skipLibCheck": true,
+    // composite emit zorunlu — artefaktlar köke DEĞİL, ignorelu cache'e gitsin
+    // (kökteki vitest.config.js, .ts config'i gölgeleyip eski config çalıştırıyordu)
+    "outDir": "node_modules/.cache/tsc-node"
+  },
+  "include": [
+    "vite.config.ts",
+    "vitest.config.ts",
+    "vitest.workspace.ts",
+    "tailwind.config.ts",
+    "src/shared/csp.ts"
+  ]
+}

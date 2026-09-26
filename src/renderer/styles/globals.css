@@ -1,0 +1,151 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root,
+[data-theme='light'] {
+  --bg: #f8fafc;
+  --surface: #ffffff;
+  --surface-2: #f1f5f9;
+  --border: #e2e8f0;
+  --text: #0f172a;
+  --text-muted: #475569;
+  --text-subtle: #64748b;
+  --accent: #0369a1;
+  --accent-hover: #075985;
+  --imessage: #0a7cff;
+  --sms: #34c759;
+  /* WhatsApp — giden balon klasik açık yeşil, koyu metin; gelen surface-2 */
+  --wa-out: #dcf8c6;
+  --wa-out-text: #0f172a;
+  --wa-accent: #25d366;
+  --success: #16a34a;
+  --danger: #dc2626;
+  --warning: #d97706;
+
+  --motion-instant: 0ms;
+  --motion-fast: 120ms;
+  --motion-base: 180ms;
+  --motion-medium: 240ms;
+  --ease-standard: cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* MASTER §5 shadow token'ları (light) — Tailwind default yerine tek-kaynak */
+  --shadow-sm: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 2px 8px rgba(15, 23, 42, 0.06);
+  --shadow-lg: 0 8px 24px rgba(15, 23, 42, 0.1);
+  --shadow-xl: 0 20px 40px rgba(15, 23, 42, 0.2);
+}
+
+[data-theme='dark'] {
+  --bg: #0b1220;
+  --surface: #0f172a;
+  --surface-2: #1e293b;
+  --border: #1e293b;
+  --text: #f8fafc;
+  --text-muted: #94a3b8;
+  --text-subtle: #64748b;
+  --accent: #38bdf8;
+  --accent-hover: #7dd3fc;
+  --imessage: #0a84ff;
+  --sms: #30d158;
+  /* WhatsApp dark — giden balon klasik koyu yeşil, açık metin */
+  --wa-out: #056162;
+  --wa-out-text: #f8fafc;
+  --wa-accent: #25d366;
+  --success: #22c55e;
+  --danger: #f87171;
+  --warning: #fbbf24;
+
+  /* MASTER §5 shadow (dark) — yarısı opaque, siyah taban */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 40px rgba(0, 0, 0, 0.5);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-fast: 0ms;
+    --motion-base: 0ms;
+    --motion-medium: 0ms;
+  }
+  /* Tailwind duration-fast/base/medium ve animate-pulse/animate-in sınıfları
+     token'ları değil sabit süreleri kullanır — sistem tercihinde hepsini
+     fiilen kapat. İlerleme göstergesi olan animate-spin korunur (anlam taşır). */
+  *:not(.animate-spin),
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+}
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Özel başlık çubuğu (titleBarStyle: 'hidden') — sürükleme bölgesi.
+   İnteraktif tüm çocuklar .app-no-drag almalı, yoksa tıklama yutulur. */
+.app-drag {
+  -webkit-app-region: drag;
+}
+.app-no-drag {
+  -webkit-app-region: no-drag;
+}
+
+/* Başlık çubuğu platform yerleşimi (html[data-platform] — lib/platform.ts):
+   Windows/Linux: native min/max/kapat SAĞDA (titleBarOverlay) → sağda ~150px boşluk.
+   macOS: trafik ışıkları SOLDA (windowChrome.ts trafficLightPosition x=14, 3×12px + aralık)
+   → solda 80px boşluk, sağda yalnız kenar payı. */
+.titlebar {
+  padding-left: 0.75rem;
+}
+.titlebar-controls-spacer {
+  width: 150px;
+  flex-shrink: 0;
+}
+html[data-platform='darwin'] .titlebar {
+  padding-left: 80px;
+}
+html[data-platform='darwin'] .titlebar-controls-spacer {
+  width: 0.5rem;
+}
+
+/* BUG 6 — tema-uyumlu custom scrollbar (TÜM modüller). İnce, overlay hissi.
+   MASTER §3 token'ları (--border / --text-subtle). Firefox scrollbar-* fallback. */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--border) transparent;
+}
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--border);
+  border-radius: 9999px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-subtle);
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
